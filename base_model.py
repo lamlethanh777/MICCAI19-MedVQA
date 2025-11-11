@@ -133,6 +133,10 @@ def build_BAN(dataset, args, priotize_using_counter=False):
         weight_path = args.RAD_dir + '/' + args.maml_model_path
         print('load initial weights MAML from: %s' % (weight_path))
         maml_v_emb = SimpleCNN(weight_path, args.eps_cnn, args.momentum_cnn)
+        # Freeze MAML model parameters to prevent gradient computation issues
+        for param in maml_v_emb.parameters():
+            param.requires_grad = False
+        maml_v_emb.eval()
     # build and load pre-trained Auto-encoder model
     if args.autoencoder:
         ae_v_emb = Auto_Encoder_Model()
@@ -186,6 +190,10 @@ def build_SAN(dataset, args):
         weight_path = args.RAD_dir + '/' + args.maml_model_path
         print('load initial weights MAML from: %s' % (weight_path))
         maml_v_emb = SimpleCNN(weight_path, args.eps_cnn, args.momentum_cnn)
+        # Freeze MAML model parameters to prevent gradient computation issues
+        for param in maml_v_emb.parameters():
+            param.requires_grad = False
+        maml_v_emb.eval()
     # build and load pre-trained Auto-encoder model
     if args.autoencoder:
         ae_v_emb = Auto_Encoder_Model()
