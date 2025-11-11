@@ -15,13 +15,13 @@ class SimpleCNN(nn.Module):
         # init and load pre-trained model
         weights = self.load_weight(weight_path)
         self.conv1 = self.init_conv(1, 64, weights['conv1'], weights['b1'])
-        self.conv1_bn = nn.BatchNorm2d(num_features=64, eps=eps_cnn, affine=True, momentum=momentum_cnn)
+        self.conv1_bn = nn.BatchNorm2d(num_features=64, eps=eps_cnn, affine=True, momentum=momentum_cnn, track_running_stats=False)
         self.conv2 = self.init_conv(64, 64, weights['conv2'], weights['b2'])
-        self.conv2_bn = nn.BatchNorm2d(num_features=64, eps=eps_cnn, affine=True, momentum=momentum_cnn)
+        self.conv2_bn = nn.BatchNorm2d(num_features=64, eps=eps_cnn, affine=True, momentum=momentum_cnn, track_running_stats=False)
         self.conv3 = self.init_conv(64, 64, weights['conv3'], weights['b3'])
-        self.conv3_bn = nn.BatchNorm2d(num_features=64, eps=eps_cnn, affine=True, momentum=momentum_cnn)
+        self.conv3_bn = nn.BatchNorm2d(num_features=64, eps=eps_cnn, affine=True, momentum=momentum_cnn, track_running_stats=False)
         self.conv4 = self.init_conv(64, 64, weights['conv4'], weights['b4'])
-        self.conv4_bn = nn.BatchNorm2d(num_features=64, eps=eps_cnn, affine=True, momentum=momentum_cnn)
+        self.conv4_bn = nn.BatchNorm2d(num_features=64, eps=eps_cnn, affine=True, momentum=momentum_cnn, track_running_stats=False)
 
     def load_weight(self, path):
         return pickle.load(open(path, 'rb'))
