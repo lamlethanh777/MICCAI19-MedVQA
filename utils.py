@@ -8,6 +8,10 @@ import errno
 import os
 import re
 import collections
+try:
+    from collections.abc import Mapping, Sequence
+except ImportError:
+    from collections import Mapping, Sequence
 import numpy as np
 import operator
 import functools
@@ -15,7 +19,6 @@ from PIL import Image
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from torch._six import string_classes
 from torch.utils.data.dataloader import default_collate
 import math
 import time
@@ -154,11 +157,11 @@ def trim_collate(batch):
         return torch.LongTensor(batch)
     elif isinstance(batch[0], float):
         return torch.DoubleTensor(batch)
-    elif isinstance(batch[0], string_classes):
+    elif isinstance(batch[0], str):
         return batch
-    elif isinstance(batch[0], collections.Mapping):
+    elif isinstance(batch[0], Mapping):
         return {key: default_collate([d[key] for d in batch]) for key in batch[0]}
-    elif isinstance(batch[0], collections.Sequence):
+    elif isinstance(batch[0], Sequence):
         transposed = zip(*batch)
         return [trim_collate(samples) for samples in transposed]
 
