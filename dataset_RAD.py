@@ -313,5 +313,5 @@ if __name__=='__main__':
     dictionary = Dictionary.load_from_file('data_RAD/dictionary.pkl')
     w_emb = WordEmbedding(dictionary.ntoken, 300, .0, 'c')
     with open('data_RAD/embed_tfidf_weights.pkl', 'rb') as f:
-        w_emb = torch.load(f)
+        w_emb = torch.load(f, weights_only=False)
     print("Load embedding with tfidf and weights successfully")

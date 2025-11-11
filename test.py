@@ -200,7 +200,7 @@ if __name__ == '__main__':
     def process(args, model, eval_loader):
         model_path = args.input + '/model_epoch%s.pth' % args.epoch
         print('loading %s' % model_path)
-        model_data = torch.load(model_path)
+        model_data = torch.load(model_path, weights_only=False)
 
         # Comment because do not use multi gpu
         # model = nn.DataParallel(model)

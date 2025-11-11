@@ -76,7 +76,7 @@ def weights_init(m):
 
 def init_net(net, net_file):
     if net_file:
-        net.load_state_dict(torch.load(net_file))
+        net.load_state_dict(torch.load(net_file, weights_only=False))
     else:
         net.apply(weights_init)
 
@@ -182,7 +182,7 @@ class Logger(object):
 
     def log(self, extra_msg=''):
         msgs = [extra_msg]
-        for key, vals in self.infos.iteritems():
+        for key, vals in self.infos.items():
             msgs.append('%s %.6f' % (key, np.mean(vals)))
         msg = '\n'.join(msgs)
         self.log_file.write(msg + '\n')
@@ -301,7 +301,7 @@ def tfidf_loading(use_tfidf, w_emb, args):
             if os.path.isfile(os.path.join(args.RAD_dir, 'embed_tfidf_weights.pkl')) == True:
                 print("Loading embedding tfidf and weights from file")
                 with open(os.path.join(args.RAD_dir ,'embed_tfidf_weights.pkl'), 'rb') as f:
-                    w_emb = torch.load(f)
+                    w_emb = torch.load(f, weights_only=False)
                 print("Load embedding tfidf and weights from file successfully")
             else:
                 print("Embedding tfidf and weights haven't been saving before")

@@ -143,7 +143,7 @@ if __name__ == '__main__':
     # load snapshot
     if args.input is not None:
         print('loading %s' % args.input)
-        model_data = torch.load(args.input)
+        model_data = torch.load(args.input, weights_only=False)
         model.load_state_dict(model_data.get('model_state', model_data))
         model.to(device)
         optim = torch.optim.Adamax(filter(lambda p: p.requires_grad, model.parameters()))

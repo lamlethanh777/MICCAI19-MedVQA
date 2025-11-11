@@ -138,7 +138,7 @@ def build_BAN(dataset, args, priotize_using_counter=False):
         ae_v_emb = Auto_Encoder_Model()
         weight_path = args.RAD_dir + '/' + args.ae_model_path
         print('load initial weights DAE from: %s'%(weight_path))
-        ae_v_emb.load_state_dict(torch.load(weight_path))
+        ae_v_emb.load_state_dict(torch.load(weight_path, weights_only=False))
     # Loading tfidf weighted embedding
     if hasattr(args, 'tfidf'):
         w_emb = tfidf_loading(args.tfidf, w_emb, args)
@@ -191,7 +191,7 @@ def build_SAN(dataset, args):
         ae_v_emb = Auto_Encoder_Model()
         weight_path = args.RAD_dir + '/' + args.ae_model_path
         print('load initial weights DAE from: %s'%(weight_path))
-        ae_v_emb.load_state_dict(torch.load(weight_path))
+        ae_v_emb.load_state_dict(torch.load(weight_path, weights_only=False))
     # Loading tfidf weighted embedding
     if hasattr(args, 'tfidf'):
         w_emb = tfidf_loading(args.tfidf, w_emb, args)
