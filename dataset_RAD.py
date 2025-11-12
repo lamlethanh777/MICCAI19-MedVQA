@@ -197,10 +197,10 @@ class VQAFeatureDataset(Dataset):
     def tensorize(self):
         if self.args.maml:
             self.maml_images_data = torch.from_numpy(self.maml_images_data)
-            self.maml_images_data = self.maml_images_data.type('torch.FloatTensor')
+            self.maml_images_data = self.maml_images_data.to(torch.float32)
         if self.args.autoencoder:
             self.ae_images_data = torch.from_numpy(self.ae_images_data)
-            self.ae_images_data = self.ae_images_data.type('torch.FloatTensor')
+            self.ae_images_data = self.ae_images_data.to(torch.float32)
         for entry in self.entries:
             question = torch.from_numpy(np.array(entry['q_token']))
             entry['q_token'] = question

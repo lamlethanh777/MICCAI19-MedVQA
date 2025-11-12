@@ -149,7 +149,7 @@ def evaluate(model, dataloader, args):
                 features = model(v, q)
             preds = model.classifier(features)
             final_preds = preds
-            batch_score = compute_score_with_logits(final_preds, a.data).sum()
+            batch_score = compute_score_with_logits(final_preds, a).sum()
             score += batch_score
             upper_bound += (a.max(1)[0]).sum()
             num_data += final_preds.size(0)

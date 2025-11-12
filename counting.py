@@ -9,7 +9,6 @@ MIT License
 """
 import torch
 import torch.nn as nn
-from torch.autograd import Variable
 
 class Counter(nn.Module):
     """ Counting module as proposed in [1].
@@ -84,13 +83,13 @@ class Counter(nn.Module):
         f = scores.frac()
         # target_l is the one-hot if the score is rounded down
         # target_r is the one-hot if the score is rounded up
-        target_l = scores.data.new(i.size(0), self.objects + 1).fill_(0)
-        target_r = scores.data.new(i.size(0), self.objects + 1).fill_(0)
+        target_l = torch.zeros(i.size(0), self.objects + 1, dtype=scores.dtype, device=scores.device)
+        target_r = torch.zeros(i.size(0), self.objects + 1, dtype=scores.dtype, device=scores.device)
 
         target_l.scatter_(dim=1, index=i.clamp(max=self.objects), value=1)
         target_r.scatter_(dim=1, index=(i + 1).clamp(max=self.objects), value=1)
         # interpolate between these with the fractional part of the score
-        return (1 - f) * Variable(target_l) + f * Variable(target_r)
+        return (1 - f) * target_l + f * target_r
 
     def filter_most_important(self, n, boxes, attention):
         """ Only keep top-n object proposals, scored by attention weight """
@@ -148,7 +147,8 @@ class PiecewiseLin(nn.Module):
         self.n = n
         self.weight = nn.Parameter(torch.ones(n + 1))
         # the first weight here is always 0 with a 0 gradient
-        self.weight.data[0] = 0
+        with torch.no_grad():
+            self.weight[0] = 0
 
     def forward(self, x):
         # all weights are positive -> function is monotonically increasing
@@ -163,7 +163,7 @@ class PiecewiseLin(nn.Module):
 
         # figure out which part of the function the input lies on
         y = self.n * x.unsqueeze(0)
-        idx = Variable(y.long().data)
+        idx = y.long()
         f = y.frac()
 
         # contribution of the linear parts left of the input

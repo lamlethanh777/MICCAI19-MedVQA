@@ -67,10 +67,10 @@ def weights_init(m):
     """custom weights initialization."""
     cname = m.__class__
     if cname == nn.Linear or cname == nn.Conv2d or cname == nn.ConvTranspose2d:
-        m.weight.data.normal_(0.0, 0.02)
+        nn.init.normal_(m.weight, 0.0, 0.02)
     elif cname == nn.BatchNorm2d:
-        m.weight.data.normal_(1.0, 0.02)
-        m.bias.data.fill_(0)
+        nn.init.normal_(m.weight, 1.0, 0.02)
+        nn.init.constant_(m.bias, 0)
     else:
         print('%s is not initialized.' % cname)
 

@@ -34,7 +34,7 @@ class BiAttention(nn.Module):
 
         if v_mask:
             mask = (0 == v.abs().sum(2)).unsqueeze(1).unsqueeze(3).expand(logits.size())
-            logits.data.masked_fill_(mask.data, -float('inf'))
+            logits.masked_fill_(mask, -float('inf'))
 
         p = nn.functional.softmax(logits.view(-1, self.glimpse, v_num * q_num), 2)
         return p.view(-1, self.glimpse, v_num, q_num), logits
@@ -80,7 +80,7 @@ class StackedAttention(nn.Module):
         # Mask actual bounding box sizes before calculating softmax
         if v_mask:
             mask = (0 == img_emb_1.abs().sum(2)).unsqueeze(2).expand(h1_emb.size())
-            h1_emb.data.masked_fill_(mask.data, -float('inf'))
+            h1_emb.masked_fill_(mask, -float('inf'))
 
         p1 = self.softmax(h1_emb)
 
@@ -112,7 +112,7 @@ class StackedAttention(nn.Module):
             # Mask actual bounding box sizes before calculating softmax
             if v_mask:
                 mask = (0 == img_embs[-1].abs().sum(2)).unsqueeze(2).expand(h_embs[-1].size())
-                h_embs[-1].data.masked_fill_(mask.data, -float('inf'))
+                h_embs[-1].masked_fill_(mask, -float('inf'))
             ps.append(self.softmax(h_embs[-1]))
 
             #  Compute weighted sum

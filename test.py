@@ -143,7 +143,7 @@ def get_result(model, dataloader, device, args):
                 features = model(v, q)
             preds = model.classifier(features)
             final_preds = preds
-            batch_score = compute_score_with_logits(final_preds, a.data).sum()
+            batch_score = compute_score_with_logits(final_preds, a).sum()
 
             # Compute accuracy for each type answer
             result[ans_type[0]]['count'] += 1.0

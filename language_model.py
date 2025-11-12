@@ -4,7 +4,6 @@ https://github.com/jnhwkim/ban-vqa
 """
 import torch
 import torch.nn as nn
-from torch.autograd import Variable
 import numpy as np
 
 class WordEmbedding(nn.Module):
@@ -27,14 +26,16 @@ class WordEmbedding(nn.Module):
     def init_embedding(self, np_file, tfidf=None, tfidf_weights=None):
         weight_init = torch.from_numpy(np.load(np_file))
         assert weight_init.shape == (self.ntoken, self.emb_dim)
-        self.emb.weight.data[:self.ntoken] = weight_init
+        with torch.no_grad():
+            self.emb.weight[:self.ntoken] = weight_init
         if tfidf is not None:
             if 0 < tfidf_weights.size:
                 weight_init = torch.cat([weight_init, torch.from_numpy(tfidf_weights)], 0)
             weight_init = tfidf.matmul(weight_init) # (N x N') x (N', F)
             self.emb_.weight.requires_grad = True
         if 'c' in self.op:
-            self.emb_.weight.data[:self.ntoken] = weight_init.clone()
+            with torch.no_grad():
+                self.emb_.weight[:self.ntoken] = weight_init.clone()
 
     def forward(self, x):
         emb = self.emb(x)
@@ -64,13 +65,13 @@ class QuestionEmbedding(nn.Module):
         self.ndirections = 1 + int(bidirect)
     def init_hidden(self, batch):
         # just to get the type of tensor
-        weight = next(self.parameters()).data
+        weight = next(self.parameters())
         hid_shape = (self.nlayers * self.ndirections, batch, self.num_hid // self.ndirections)
         if self.rnn_type == 'LSTM':
-            return (Variable(weight.new(*hid_shape).zero_()),
-                    Variable(weight.new(*hid_shape).zero_()))
+            return (torch.zeros(*hid_shape, dtype=weight.dtype, device=weight.device),
+                    torch.zeros(*hid_shape, dtype=weight.dtype, device=weight.device))
         else:
-            return Variable(weight.new(*hid_shape).zero_())
+            return torch.zeros(*hid_shape, dtype=weight.dtype, device=weight.device)
 
     def forward(self, x):
         # x: [batch, sequence, in_dim]
